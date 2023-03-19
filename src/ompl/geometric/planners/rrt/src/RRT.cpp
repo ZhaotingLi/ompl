@@ -100,6 +100,8 @@ ompl::base::PlannerStatus ompl::geometric::RRT::solve(const base::PlannerTermina
     base::Goal *goal = pdef_->getGoal().get();
     auto *goal_s = dynamic_cast<base::GoalSampleableRegion *>(goal);
 
+    // this code initializes the search tree for the RRT planner by adding a new motion for each start state 
+    // to the nearest neighbor data structure
     while (const base::State *st = pis_.nextStart())
     {
         auto *motion = new Motion(si_);
@@ -140,11 +142,18 @@ ompl::base::PlannerStatus ompl::geometric::RRT::solve(const base::PlannerTermina
         /* find state to add */
         double d = si_->distance(nmotion->state, rstate);
         if (d > maxDistance_)
-        {
+        {   
+            /*
+            nmotion->state: The state associated with the current motion.
+            rstate: The randomly generated state.
+            maxDistance_ / d: The fraction of the distance between nmotion->state and rstate at which the interpolated state should be placed. This ensures that the distance between the interpolated state and nmotion->state is equal to maxDistance_.
+            xstate: A pointer to a new State object that will be used to store the interpolated state.
+            */
             si_->getStateSpace()->interpolate(nmotion->state, rstate, maxDistance_ / d, xstate);
             dstate = xstate;
         }
 
+        // checkMotion: check whether the motion is valid, i.e. having collides with obstacles 
         if (si_->checkMotion(nmotion->state, dstate))
         {
             if (addIntermediateStates_)
@@ -175,6 +184,7 @@ ompl::base::PlannerStatus ompl::geometric::RRT::solve(const base::PlannerTermina
                 nmotion = motion;
             }
 
+            // check whehter goal is reached
             double dist = 0.0;
             bool sat = goal->isSatisfied(nmotion->state, &dist);
             if (sat)
@@ -204,17 +214,25 @@ ompl::base::PlannerStatus ompl::geometric::RRT::solve(const base::PlannerTermina
         lastGoalMotion_ = solution;
 
         /* construct the solution path */
+        // By following the parent pointers starting from the goal motion, we can reconstruct the solution path.
         std::vector<Motion *> mpath;
         while (solution != nullptr)
-        {
+        {   
+            /*This loop constructs a vector mpath that contains pointers to all the motions in the solution path, 
+            in reverse order (starting from the goal motion and ending at the start motion).*/
             mpath.push_back(solution);
             solution = solution->parent;
         }
 
         /* set the solution path */
         auto path(std::make_shared<PathGeometric>(si_));
+        // add each state in the solution path to the new path in order.
         for (int i = mpath.size() - 1; i >= 0; --i)
             path->append(mpath[i]->state);
+        /*This line sets the solution path in the ProblemDefinition object using the addSolutionPath() method. 
+        The approximate and approxdif parameters are optional and are used to indicate whether the path is an 
+        approximate solution and the maximum allowed approximation error, respectively.
+         The getName() method returns the name of the planner instance.*/
         pdef_->addSolutionPath(path, approximate, approxdif, getName());
         solved = true;
     }

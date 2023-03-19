@@ -168,7 +168,8 @@ namespace ompl
 
             /** \brief Compute distance between motions (actually distance between contained states) */
             double distanceFunction(const Motion *a, const Motion *b) const
-            {
+            {   
+                // si_: space information class defined in base::planner: SpaceInformationPtr si_
                 return si_->distance(a->state, b->state);
             }
 
