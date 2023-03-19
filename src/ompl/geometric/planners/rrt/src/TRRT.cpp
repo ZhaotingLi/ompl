@@ -193,7 +193,7 @@ ompl::geometric::TRRT::solve(const base::PlannerTerminationCondition &plannerTer
     // Debug
     OMPL_INFORM("%s: Starting planning with %u states already in datastructure", getName().c_str(),
                 nearestNeighbors_->size());
-
+    // OMPL_INFORM("test ompl installation");  // test passedd
     // Solver variables ------------------------------------------------------------------------------------
 
     // the final solution
