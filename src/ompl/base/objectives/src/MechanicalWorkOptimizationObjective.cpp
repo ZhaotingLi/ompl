@@ -49,7 +49,8 @@ double ompl::base::MechanicalWorkOptimizationObjective::getPathLengthWeight() co
 }
 
 ompl::base::Cost ompl::base::MechanicalWorkOptimizationObjective::stateCost(const State *) const
-{
+{   
+    // std::cout << "stateCost: "<< Cost(1.0).value() << std::endl;
     return Cost(1.0);
 }
 
@@ -57,5 +58,6 @@ ompl::base::Cost ompl::base::MechanicalWorkOptimizationObjective::motionCost(con
 {
     // Only accrue positive changes in cost
     double positiveCostAccrued = std::max(stateCost(s2).value() - stateCost(s1).value(), 0.0);
+    // std::cout << "motionCost: "<< Cost(positiveCostAccrued + pathLengthWeight_ * si_->distance(s1, s2)).value() << std::endl;
     return Cost(positiveCostAccrued + pathLengthWeight_ * si_->distance(s1, s2));
 }

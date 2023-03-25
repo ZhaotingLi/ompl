@@ -218,6 +218,20 @@ ompl::geometric::TRRT::solve(const base::PlannerTerminationCondition &plannerTer
     // The chosen state btw rand_state and interpolated_state
     base::State *newState;
 
+    // print state
+    // which is actually defined in moveit/moveit_planners/ompl/ompl_interface/src/parameterization/model_based_state_space.cpp
+    std::cout<<"test print state"<<std::endl;
+    si_->printState(randState, std::cout);
+    /* output:
+        panda_joint1 = 6.92455e-310 
+        panda_joint2 = 6.92455e-310 
+        panda_joint3 = 0.193 
+        panda_joint4 = 0.09 
+        panda_joint5 = 0.09 
+        panda_joint6 = 0.373 
+        panda_joint7 = 6.92455e-310 
+    */ 
+    
     // Begin sampling --------------------------------------------------------------------------------------
     while (plannerTerminationCondition() == false)
     {
