@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 project(ompl VERSION 1.6.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 set(OMPL_ABI_VERSION 17)
+add_compile_options(-std=c++17)
 
 # set the default build type
 if (NOT CMAKE_BUILD_TYPE)
@@ -23,6 +25,8 @@ include(GNUInstallDirs)
 include(FeatureSummary)
 include(CompilerSettings)
 include(OMPLUtils)
+
+include_directories(/home/lzt/catkin_crl/src/franka_ros/contact_detection/include)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
@@ -51,6 +55,48 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.58 QUIET REQUIRED COMPONENTS serialization filesystem system program_options)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
+
+# find_package(OsqpEigen REQUIRED)
+# find_package(PythonLibs REQUIRED) # matplotlibcpp needs this
+# # matplot++ required (2) 
+# include_directories(${PYTHON_INCLUDE_DIRS})
+
+set(CRL_DATA_FOLDER
+    "\"${CMAKE_CURRENT_LIST_DIR}/data\""
+    CACHE STRING ""
+)
+# find_package(tinyxml2 CONFIG REQUIRED)
+find_package(OsqpEigen REQUIRED)
+find_package(PythonLibs REQUIRED) # matplotlibcpp needs this
+# matplot++ required (2) 
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+# find_package(catkin REQUIRED COMPONENTS contact_detection)
+include_directories(SYSTEM /home/lzt/catkin_crl/src/franka_ros/contact_detection/include)
+link_directories(${catkin_INCLUDE_DIRS})
+
+add_library(contact_detection 
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/mesh_model/mesh_loader.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/mesh_model/tinyxml2.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/contact_detection_simplified_model.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/contact_detection_core.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/robot/robot.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/robot/utils.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/robot/urdfLoader.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/helpers/helpers.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/utils/logger.cpp
+            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/utils/utils.cpp
+            )
+target_include_directories(contact_detection PUBLIC ${OMPL_INCLUDE_DIRS} /home/lzt/catkin_crl/src/franka_ros/contact_detection/include)
+target_link_libraries(contact_detection ${OMPL_LIBRARIES} ${catkin_LIBRARIES} OsqpEigen::OsqpEigen)
+
+# find_package(tinyxml2 CONFIG REQUIRED)
+# include_directories(${TINYXML_INCLUDE_DIR})
+
+# target_link_libraries(ompl ${catkin_LIBRARIES})
+# add_dependencies(${PROJECT_NAME} contact_detection)
+# catkin_package(CATKIN_DEPENDS message_runtime std_msgs moveit_msgs)
+
 
 # Add support in Boost::Python for std::shared_ptr
 # This is a hack that replaces boost::shared_ptr related code with std::shared_ptr.

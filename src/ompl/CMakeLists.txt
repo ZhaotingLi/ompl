@@ -59,7 +59,8 @@ target_link_libraries(ompl
     ${Boost_SERIALIZATION_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT})
+    ${CMAKE_THREAD_LIBS_INIT}
+    OsqpEigen::OsqpEigen)
 
 if (OMPL_EXTENSION_ODE)
     if (NOT CMAKE_VERSION VERSION_LESS 3.13)
@@ -83,6 +84,11 @@ else (MSVC)
     set_target_properties(ompl PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION "${OMPL_ABI_VERSION}")
 endif (MSVC)
 
+
+target_link_libraries(ompl contact_detection)
+target_link_libraries(ompl ${PYTHON_LIBRARIES})
+# target_link_libraries(ompl tinyxml2::tinyxml2)
+
 # install the library
 install(TARGETS ompl
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -93,3 +99,6 @@ if (NOT MSVC)
         "${CMAKE_CURRENT_SOURCE_DIR}/../../py-bindings/ompl/util/libompl${CMAKE_SHARED_LIBRARY_SUFFIX}"
         WORKING_DIRECTORY "${LIBRARY_OUTPUT_PATH}")
 endif (NOT MSVC)
+
+
+
