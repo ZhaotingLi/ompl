@@ -231,6 +231,26 @@ ompl::geometric::TRRT::solve(const base::PlannerTerminationCondition &plannerTer
         panda_joint6 = 0.373 
         panda_joint7 = 6.92455e-310 
     */ 
+
+   // convert state to vector
+    std::vector<double> state_vector;
+    ompl::base::StateSpacePtr space = si_->getStateSpace();
+    space->copyToReals(state_vector, randState);
+    std::cout<<"test print state vector"<<std::endl;
+    for (int i = 0; i < state_vector.size(); i++)
+    {
+        std::cout<<state_vector[i]<<std::endl;
+    }
+    /*output: 
+        6.94079e-310
+        6.94079e-310
+        0.193
+        0.09
+        0.09
+        0.373
+        6.94079e-310
+    */
+   
     
     // Begin sampling --------------------------------------------------------------------------------------
     while (plannerTerminationCondition() == false)
