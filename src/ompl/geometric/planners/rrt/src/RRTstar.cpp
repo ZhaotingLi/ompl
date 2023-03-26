@@ -179,6 +179,7 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
             auto *motion = new Motion(si_);
             si_->copyState(motion->state, st);
             motion->cost = opt_->identityCost();
+            // motion->cost = opt_->StateCost_deformedpath(motion->state);
             nn_->add(motion);
             startMotions_.push_back(motion);
         }

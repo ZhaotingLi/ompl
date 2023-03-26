@@ -61,7 +61,7 @@ double ompl::base::DeformedPathOptimizationObjective::getPathLengthWeight() cons
 ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::stateCost(const State *) const
 {   
 
-    std::cout<<"test DeformedPathOptimizationObjective" << std::endl;
+    // std::cout<<"test DeformedPathOptimizationObjective stateCost" << std::endl;
 
     return Cost(1.0);
 }
@@ -76,26 +76,35 @@ ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deform
     // // contact_detector_simplified.init();
     // contact_detector_simplified.read_mesh_data();
     // contact_detector_simplified.create_vertex_neighbor_info();
-    std::cout<<"test StateCost_deformedpath" << std::endl;
+    // std::cout<<"test StateCost_deformedpath" << std::endl;
     std::vector<double> state_vector;
     ompl::base::StateSpacePtr space = si_->getStateSpace();
     space->copyToReals(state_vector, s);
 
     Eigen::VectorXd robot_state = Eigen::Map<Eigen::VectorXd>(state_vector.data(), state_vector.size());
 
+    Eigen::VectorXd robot_state_13(13);
+    robot_state_13.setZero();
+    robot_state_13.segment(6, 7) = robot_state;
+
     std::vector<Eigen::Vector3d> path_vertices;
-    contact_detector_simplified.find_contact_location_by_mode(robot_state, 1, path_vertices);
+    // contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 1, path_vertices);   // 1 is the case where robot is below the band
+    contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 0, path_vertices);  // 0 is the case where robot is above the band
+
+    double cost_deformed = contact_detector_simplified.calculate_path_cost(path_vertices);
 
 
-    // std::cout<<"test DeformedPathOptimizationObjective" << std::endl;
+    std::cout<<"test DeformedPathOptimizationObjective: "<< cost_deformed << std::endl;
+    std::cout<<"sampled robot state: " << robot_state_13.transpose() << std::endl; 
 
-    return Cost(1.0);
+    return Cost(0.2 + 20 * cost_deformed);
 }
 
 ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::motionCost(const State *s1, const State *s2) const
 {
     // Only accrue positive changes in cost
     double positiveCostAccrued = std::max(stateCost(s2).value() - stateCost(s1).value(), 0.0);
+    // double positiveCostAccrued = std::max(StateCost_deformedpath(s2).value() - StateCost_deformedpath(s1).value(), 0.0);
     // std::cout << "motionCost: "<< Cost(positiveCostAccrued + pathLengthWeight_ * si_->distance(s1, s2)).value() << std::endl;
     return Cost(positiveCostAccrued + pathLengthWeight_ * si_->distance(s1, s2));
 }
