@@ -87,7 +87,7 @@ ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deform
     contact_detector_simplified.find_contact_location_by_mode(robot_state, 1, path_vertices);
 
 
-    std::cout<<"test DeformedPathOptimizationObjective" << std::endl;
+    // std::cout<<"test DeformedPathOptimizationObjective" << std::endl;
 
     return Cost(1.0);
 }

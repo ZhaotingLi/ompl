@@ -54,6 +54,8 @@ namespace ompl
             /** \brief Returns a cost with a value of 1. */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s)  override;
+
             /** \brief Interpolates between \e s1 and \e s2 to check for
                 state costs along the motion between the two
                 states. Assumes all costs are worse than identity */
