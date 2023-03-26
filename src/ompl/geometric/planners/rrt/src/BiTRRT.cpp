@@ -42,6 +42,8 @@
 #include "ompl/tools/config/MagicConstants.h"
 #include "ompl/tools/config/SelfConfig.h"
 
+#include "ompl/base/objectives/DeformedPathOptimizationObjective.h"
+
 ompl::geometric::BiTRRT::BiTRRT(const base::SpaceInformationPtr &si) : base::Planner(si, "BiTRRT")
 {
     specs_.approximateSolutions = false;
@@ -141,9 +143,9 @@ void ompl::geometric::BiTRRT::setup()
     // Setup the optimization objective, if it isn't specified
     if (!pdef_ || !pdef_->hasOptimizationObjective())
     {
-        OMPL_INFORM("%s: No optimization objective specified.  Defaulting to mechanical work minimization.",
+        OMPL_INFORM("%s: No optimization objective specified.  Defaulting to deformed path minimization.",
                     getName().c_str());
-        opt_ = std::make_shared<base::MechanicalWorkOptimizationObjective>(si_);
+        opt_ = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
     }
     else
         opt_ = pdef_->getOptimizationObjective();
@@ -168,7 +170,8 @@ ompl::geometric::BiTRRT::Motion *ompl::geometric::BiTRRT::addMotion(const base::
 {
     auto *motion = new Motion(si_);
     si_->copyState(motion->state, state);
-    motion->cost = opt_->stateCost(motion->state);
+    // motion->cost = opt_->stateCost(motion->state);
+    motion->cost = opt_->StateCost_deformedpath(motion->state);
     motion->parent = parent;
     motion->root = parent != nullptr ? parent->root : nullptr;
 
@@ -356,7 +359,8 @@ ompl::base::PlannerStatus ompl::geometric::BiTRRT::solve(const base::PlannerTerm
     {
         auto *motion = new Motion(si_);
         si_->copyState(motion->state, state);
-        motion->cost = opt_->stateCost(motion->state);
+        // motion->cost = opt_->stateCost(motion->state);
+        motion->cost = opt_->StateCost_deformedpath(motion->state);
         motion->root = motion->state;  // this state is the root of a tree
 
         if (tStart_->size() == 0)  // do not overwrite best/worst from a prior call to solve
