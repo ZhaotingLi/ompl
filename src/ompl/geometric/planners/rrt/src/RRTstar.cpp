@@ -49,6 +49,8 @@
 #include "ompl/tools/config/SelfConfig.h"
 #include "ompl/util/GeometricEquations.h"
 
+#include "ompl/base/objectives/DeformedPathOptimizationObjective.h"
+
 ompl::geometric::RRTstar::RRTstar(const base::SpaceInformationPtr &si)
   : base::Planner(si, "RRTstar")
 {
@@ -116,10 +118,10 @@ void ompl::geometric::RRTstar::setup()
             opt_ = pdef_->getOptimizationObjective();
         else
         {
-            OMPL_INFORM("%s: No optimization objective specified. Defaulting to optimizing path length for the allowed "
+            OMPL_INFORM("%s: No optimization objective specified. Defaulting to optimizing  deformed path length for the allowed "
                         "planning time.",
                         getName().c_str());
-            opt_ = std::make_shared<base::PathLengthOptimizationObjective>(si_);
+            opt_ = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
 
             // Store the new objective in the problem def'n
             pdef_->setOptimizationObjective(opt_);
@@ -286,7 +288,11 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
             auto *motion = new Motion(si_);
             si_->copyState(motion->state, dstate);
             motion->parent = nmotion;
-            motion->incCost = opt_->motionCost(nmotion->state, motion->state);
+            double positiveCostAccrued = std::max(opt_->StateCost_deformedpath(nmotion->state).value() 
+                                                    - opt_->StateCost_deformedpath(motion->state).value(), 0.0);
+            ompl::base::Cost my_motionCost = ompl::base::Cost(positiveCostAccrued + 0.1 * si_->distance(nmotion->state, motion->state));
+            motion->incCost = my_motionCost;
+            // motion->incCost = opt_->motionCost(nmotion->state, motion->state);
             motion->cost = opt_->combineCosts(nmotion->cost, motion->incCost);
 
             // Find nearby neighbors of the new motion
@@ -358,8 +364,12 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
                 }
             }
             else  // if not delayCC
-            {
-                motion->incCost = opt_->motionCost(nmotion->state, motion->state);
+            {   
+                double positiveCostAccrued2 = std::max(opt_->StateCost_deformedpath(nmotion->state).value() 
+                                                    - opt_->StateCost_deformedpath(motion->state).value(), 0.0);
+                ompl::base::Cost my_motionCost2 = ompl::base::Cost(positiveCostAccrued2 + 0.1 * si_->distance(nmotion->state, motion->state));
+                motion->incCost = my_motionCost2;
+                // motion->incCost = opt_->motionCost(nmotion->state, motion->state);
                 motion->cost = opt_->combineCosts(nmotion->cost, motion->incCost);
                 // find which one we connect the new state to
                 for (std::size_t i = 0; i < nbh.size(); ++i)

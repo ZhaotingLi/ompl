@@ -97,7 +97,8 @@ ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deform
     std::cout<<"test DeformedPathOptimizationObjective: "<< cost_deformed << std::endl;
     // std::cout<<"sampled robot state: " << robot_state_13.transpose() << std::endl; 
 
-    return Cost(0.5 + 100 * cost_deformed);
+    // return Cost(0.5 + std::exp(10 * cost_deformed));
+    return Cost(0.01 + (100 * cost_deformed));
 }
 
 ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::motionCost(const State *s1, const State *s2) const
