@@ -48,6 +48,13 @@ double ompl::base::MechanicalWorkOptimizationObjective::getPathLengthWeight() co
     return pathLengthWeight_;
 }
 
+
+ompl::base::Cost ompl::base::MechanicalWorkOptimizationObjective::StateCost_deformedpath(const State *) 
+{   
+    // std::cout << "stateCost: "<< Cost(1.0).value() << std::endl;
+    return Cost(1.0);
+}
+
 ompl::base::Cost ompl::base::MechanicalWorkOptimizationObjective::stateCost(const State *) const
 {   
     // std::cout << "stateCost: "<< Cost(1.0).value() << std::endl;

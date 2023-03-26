@@ -48,6 +48,12 @@ ompl::base::Cost ompl::base::ControlDurationObjective::stateCost(const State *) 
     return Cost(0.0);
 }
 
+
+ompl::base::Cost ompl::base::ControlDurationObjective::StateCost_deformedpath(const State *) 
+{
+    return Cost(0.0);
+}
+
 ompl::base::Cost ompl::base::ControlDurationObjective::motionCost(const State *, const State *) const
 {
     return Cost(0.0);

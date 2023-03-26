@@ -55,6 +55,8 @@ namespace ompl
             /** \brief Return the time value of the state. */
             base::Cost stateCost(const ompl::base::State *s) const override;
 
+            base::Cost StateCost_deformedpath(const ompl::base::State *s)  override;
+
             /** \brief Return the cost combination of the two states. */
             base::Cost motionCost(const ompl::base::State *s1, const ompl::base::State *s2) const override;
 

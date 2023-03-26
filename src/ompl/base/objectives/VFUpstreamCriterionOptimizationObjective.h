@@ -72,6 +72,11 @@ namespace ompl
                 return Cost(0.);
             }
 
+            Cost StateCost_deformedpath(const State *) override
+            {
+                return Cost(0.);
+            }
+
             /** Compute upstream criterion between two states. */
             ompl::base::Cost motionCost(const State *s1, const State *s2) const override
             {

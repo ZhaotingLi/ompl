@@ -65,6 +65,8 @@ namespace ompl
             /** \brief Returns a cost with a value of 1. */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s)  override;
+
             /** \brief Compute the cost of a path segment from \e s1 to \e s2 (including endpoints)
                 \param s1 start state of the motion to be evaluated
                 \param s2 final state of the motion to be evaluated

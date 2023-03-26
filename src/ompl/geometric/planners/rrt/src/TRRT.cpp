@@ -41,6 +41,8 @@
 #include "ompl/tools/config/MagicConstants.h"
 #include <limits>
 
+#include "ompl/base/objectives/DeformedPathOptimizationObjective.h"
+
 ompl::geometric::TRRT::TRRT(const base::SpaceInformationPtr &si) : base::Planner(si, "TRRT")
 {
     // Standard RRT Variables
@@ -94,9 +96,12 @@ void ompl::geometric::TRRT::setup()
 
     if (!pdef_ || !pdef_->hasOptimizationObjective())
     {
-        OMPL_INFORM("%s: No optimization objective specified.  Defaulting to mechanical work minimization.",
+        // OMPL_INFORM("%s: No optimization objective specified.  Defaulting to mechanical work minimization.",
+        //             getName().c_str());
+        // opt_ = std::make_shared<base::MechanicalWorkOptimizationObjective>(si_);
+        OMPL_INFORM("%s: No optimization objective specified.  Defaulting to deformed path minimization.",
                     getName().c_str());
-        opt_ = std::make_shared<base::MechanicalWorkOptimizationObjective>(si_);
+        opt_ = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
     }
     else
         opt_ = pdef_->getOptimizationObjective();
@@ -170,7 +175,8 @@ ompl::geometric::TRRT::solve(const base::PlannerTerminationCondition &plannerTer
         si_->copyState(motion->state, state);
 
         // Set cost for this start state
-        motion->cost = opt_->stateCost(motion->state);
+        // motion->cost = opt_->stateCost(motion->state);
+        motion->cost = opt_->StateCost_deformedpath(motion->state);
 
         if (nearestNeighbors_->size() == 0)  // do not overwrite best/worst from previous call to solve
             worstCost_ = bestCost_ = motion->cost;
@@ -307,7 +313,8 @@ ompl::geometric::TRRT::solve(const base::PlannerTerminationCondition &plannerTer
         if (!minExpansionControl(randMotionDistance))
             continue;  // give up on this one and try a new sample
 
-        base::Cost childCost = opt_->stateCost(newState);
+        // base::Cost childCost = opt_->stateCost(newState);
+        base::Cost childCost = opt_->StateCost_deformedpath(newState);
 
         // Only add this motion to the tree if the transition test accepts it
         if (!transitionTest(opt_->motionCost(nearMotion->state, newState)))

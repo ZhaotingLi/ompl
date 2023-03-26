@@ -59,6 +59,8 @@ namespace ompl
             /** \brief Returns a cost with a value of 1. */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s)  override;
+
             /** \brief Defines motion cost in terms of the mechanical work formulation used for TRRT. */
             Cost motionCost(const State *s1, const State *s2) const override;
 

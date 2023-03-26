@@ -50,6 +50,12 @@ ompl::base::Cost ompl::base::MaximizeMinClearanceObjective::stateCost(const Stat
     return Cost(si_->getStateValidityChecker()->clearance(s));
 }
 
+
+ompl::base::Cost ompl::base::MaximizeMinClearanceObjective::StateCost_deformedpath(const State *s) 
+{
+    return Cost(si_->getStateValidityChecker()->clearance(s));
+}
+
 bool ompl::base::MaximizeMinClearanceObjective::isCostBetterThan(Cost c1, Cost c2) const
 {
     return c1.value() > c2.value();

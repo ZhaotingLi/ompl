@@ -53,6 +53,8 @@ namespace ompl
              * this objective's SpaceInformation */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s) override;
+
             /** \brief Since we wish to maximize clearance, and costs are equivalent to path clearance, we return the
              * greater of the two cost values. */
             bool isCostBetterThan(Cost c1, Cost c2) const override;

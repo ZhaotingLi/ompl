@@ -52,6 +52,8 @@ namespace ompl
             /** \brief Returns identity cost. */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s)  override;
+
             /** \brief Motion cost for this objective is defined as
                 the configuration space distance between \e s1 and \e
                 s2, using the method SpaceInformation::distance(). */

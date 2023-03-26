@@ -42,6 +42,15 @@ ompl::base::DeformedPathOptimizationObjective::DeformedPathOptimizationObjective
   : OptimizationObjective(si), pathLengthWeight_(pathLengthWeight)
 {
     description_ = "Deformed path length";
+
+    contact_detector_simplified.read_mesh_data();
+    contact_detector_simplified.create_vertex_neighbor_info();
+
+    Eigen::Vector3d pin1, pin2;
+    pin1 << 0.5, -0.3, 0.45;
+    pin2 << 0.5, 0.3, 0.45;
+
+    contact_detector_simplified.set_elastic_band_pins(pin1, pin2);
 }
 
 double ompl::base::DeformedPathOptimizationObjective::getPathLengthWeight() const
@@ -51,15 +60,34 @@ double ompl::base::DeformedPathOptimizationObjective::getPathLengthWeight() cons
 
 ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::stateCost(const State *) const
 {   
+
+    std::cout<<"test DeformedPathOptimizationObjective" << std::endl;
+
+    return Cost(1.0);
+}
+
+
+ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deformedpath(const State *s) 
+{   
     // std::cout << "stateCost: "<< Cost(1.0).value() << std::endl;
 
-    std::string mesh_path = "/home/lzt/catkin_crl/src/franka_ros/contact_detection/meshed_remeshed"; 
-    int robot_flag = 0;
-    contact::Contact_detection_simplifiedModel contact_detector_simplified = contact::Contact_detection_simplifiedModel(mesh_path, robot_flag);
-    // contact_detector_simplified.init();
-    contact_detector_simplified.read_mesh_data();
-    contact_detector_simplified.create_vertex_neighbor_info();
+    
+    // contact::Contact_detection_simplifiedModel contact_detector_simplified = contact::Contact_detection_simplifiedModel(mesh_path, robot_flag);
+    // // contact_detector_simplified.init();
+    // contact_detector_simplified.read_mesh_data();
+    // contact_detector_simplified.create_vertex_neighbor_info();
+    std::cout<<"test StateCost_deformedpath" << std::endl;
+    std::vector<double> state_vector;
+    ompl::base::StateSpacePtr space = si_->getStateSpace();
+    space->copyToReals(state_vector, s);
 
+    Eigen::VectorXd robot_state = Eigen::Map<Eigen::VectorXd>(state_vector.data(), state_vector.size());
+
+    std::vector<Eigen::Vector3d> path_vertices;
+    contact_detector_simplified.find_contact_location_by_mode(robot_state, 1, path_vertices);
+
+
+    std::cout<<"test DeformedPathOptimizationObjective" << std::endl;
 
     return Cost(1.0);
 }

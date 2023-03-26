@@ -56,6 +56,8 @@ namespace ompl
             /** \brief Returns a cost with a value of 0. */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s) override;
+
             /** \brief Returns a cost with a value of 0. */
             Cost motionCost(const State *s1, const State *s2) const override;
 

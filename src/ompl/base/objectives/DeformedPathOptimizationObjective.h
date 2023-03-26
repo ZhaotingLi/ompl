@@ -39,6 +39,7 @@
 
 #include "ompl/base/OptimizationObjective.h"
 #include "contact_detection/contact_detection_simplified_model.h"
+#include <Eigen/Core>
 
 namespace ompl
 {
@@ -60,12 +61,22 @@ namespace ompl
             /** \brief Returns a cost with a value of 1. */
             Cost stateCost(const State *s) const override;
 
+            Cost StateCost_deformedpath(const State *s) override;
+
             /** \brief Defines motion cost in terms of the mechanical work formulation used for TRRT. */
             Cost motionCost(const State *s1, const State *s2) const override;
 
         protected:
             /** \brief The weighing factor for the path length in the mechanical work objective formulation. */
             double pathLengthWeight_;
+
+
+            // parameters for contact detection
+            std::string mesh_path = "/home/lzt/catkin_crl/src/franka_ros/contact_detection/meshed_remeshed"; 
+            int robot_flag = 0;
+        private:
+            
+            contact::Contact_detection_simplifiedModel contact_detector_simplified = contact::Contact_detection_simplifiedModel(mesh_path, robot_flag);
         };
     }
 }

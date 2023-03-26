@@ -115,6 +115,9 @@ namespace ompl
 
             /** \brief Evaluate a cost map defined on the state space at a state \e s. */
             virtual Cost stateCost(const State *s) const = 0;
+            
+            /** \brief Evaluate a cost map defined on the state space at a state \e s, considering the deformation of a elastic band */
+            virtual Cost StateCost_deformedpath(const State *s)  = 0;
 
             /** \brief Get the cost that corresponds to the motion segment between \e s1 and \e s2 */
             virtual Cost motionCost(const State *s1, const State *s2) const = 0;
@@ -253,6 +256,9 @@ namespace ompl
               values, where each individual value is scaled by its
               weight */
             Cost stateCost(const State *s) const override;
+
+
+            Cost StateCost_deformedpath(const State *s)  override;
 
             /** The default implementation of this method is to use
               addition to add up all the individual objectives' motion

@@ -44,6 +44,13 @@ ompl::base::Cost ompl::base::MinimizeArrivalTime::stateCost(const ompl::base::St
     return base::Cost(s->as<base::CompoundState>()->as<base::TimeStateSpace::StateType>(1)->position);
 }
 
+ompl::base::Cost ompl::base::MinimizeArrivalTime::StateCost_deformedpath(const ompl::base::State *s) 
+{
+    return base::Cost(s->as<base::CompoundState>()->as<base::TimeStateSpace::StateType>(1)->position);
+}
+
+
+
 ompl::base::Cost ompl::base::MinimizeArrivalTime::motionCost(const ompl::base::State *s1,
                                                              const ompl::base::State *s2) const
 {

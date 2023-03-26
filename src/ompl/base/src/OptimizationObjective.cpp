@@ -264,6 +264,17 @@ ompl::base::Cost ompl::base::MultiOptimizationObjective::stateCost(const State *
     return c;
 }
 
+ompl::base::Cost ompl::base::MultiOptimizationObjective::StateCost_deformedpath(const State *s) 
+{
+    Cost c = identityCost();
+    for (const auto &component : components_)
+    {
+        c = Cost(c.value() + component.weight * (component.objective->StateCost_deformedpath(s).value()));
+    }
+
+    return c;
+}
+
 ompl::base::Cost ompl::base::MultiOptimizationObjective::motionCost(const State *s1, const State *s2) const
 {
     Cost c = identityCost();
