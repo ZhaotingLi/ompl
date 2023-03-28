@@ -72,6 +72,8 @@
 #include "ompl/base/objectives/PathLengthOptimizationObjective.h"
 #include "ompl/util/String.h"
 
+#include "ompl/base/objectives/DeformedPathOptimizationObjective.h"
+
 ompl::geometric::AnytimePathShortening::AnytimePathShortening(const ompl::base::SpaceInformationPtr &si)
   : ompl::base::Planner(si, "APS"), defaultNumPlanners_(std::max(1u, std::thread::hardware_concurrency()))
 {
@@ -139,10 +141,10 @@ ompl::geometric::AnytimePathShortening::solve(const ompl::base::PlannerTerminati
     base::OptimizationObjectivePtr opt = pdef_->getOptimizationObjective();
     if (!opt)
     {
-        OMPL_INFORM("%s: No optimization objective specified. Defaulting to optimizing path length for the allowed "
+        OMPL_INFORM("%s: DeformedPathOptimizationObjective objective specified. Defaulting to optimizing path length for the allowed "
                     "planning time.",
                     getName().c_str());
-        opt = std::make_shared<base::PathLengthOptimizationObjective>(si_);
+        opt = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
         pdef_->setOptimizationObjective(opt);
     }
 

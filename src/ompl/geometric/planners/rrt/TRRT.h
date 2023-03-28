@@ -249,8 +249,10 @@ namespace ompl
 
             /** \brief Compute distance between motions (actually distance between contained states) */
             double distanceFunction(const Motion *a, const Motion *b) const
-            {
-                return si_->distance(a->state, b->state);
+            {      
+                // return si_->distance(a->state, b->state);
+                // modify the distance metric
+                return si_->distance(a->state, b->state) + (a->cost.value() - b->cost.value()) * (a->cost.value() - b->cost.value());
             }
 
             /** \brief Filter irrelevant configuration regarding the search of low-cost paths before inserting into tree

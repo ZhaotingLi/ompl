@@ -259,6 +259,17 @@ ompl::geometric::BiTRRT::GrowResult ompl::geometric::BiTRRT::extendTree(Motion *
                                transitionTest(tree == tStart_ ? opt_->motionCost(nearest->state, toMotion->state)
                                                               : opt_->motionCost(toMotion->state, nearest->state)) &&
                                minExpansionControl(d);
+    // not reasonable to check motion, ideally you should check the dynamics shoud be valid
+    // this brute method can also disgard some valid motion
+    if(validMotion){
+        toMotion->cost = opt_->StateCost_deformedpath(toMotion->state);
+        // check the cost of the motion
+        std::cout << "cost difference: " << abs(nearest->cost.value() - toMotion->cost.value()) << " near cost: "<< nearest->cost.value()  <<" tomotion cost: " << toMotion->cost.value() << std::endl;
+        if(abs(nearest->cost.value() - toMotion->cost.value()) > 3){
+            validMotion = false;
+            // std::cout << "cost difference: " << abs(nearest->cost.value() - toMotion->cost.value()) << std::endl;
+        }
+    }
 
     if (validMotion)
     {
@@ -282,8 +293,9 @@ bool ompl::geometric::BiTRRT::connectTrees(Motion *nmotion, TreeData &tree, Moti
     // Get the nearest state to nmotion in tree (nmotion is NOT in tree)
     Motion *nearest = tree->nearest(nmotion);
     bool treeIsStart = tree == tStart_;
-    double dist = (treeIsStart ? si_->distance(nearest->state, nmotion->state)
-                               : si_->distance(nmotion->state, nearest->state));
+    // modified by lzt
+    double dist = (treeIsStart ? si_->distance(nearest->state, nmotion->state) + distanceFunction(nmotion, nearest)
+                               : si_->distance(nmotion->state, nearest->state) + distanceFunction(nmotion, nearest));
 
     // Do not attempt a connection if the trees are far apart
     if (dist > connectionRange_)
@@ -433,8 +445,10 @@ ompl::base::PlannerStatus ompl::geometric::BiTRRT::solve(const base::PlannerTerm
                 // The trees have been connected.  Construct the solution path
                 Motion *solution = connectionPoint_.first;
                 std::vector<Motion *> mpath1;
+                double cost_path = 0; 
                 while (solution != nullptr)
-                {
+                {   
+                    cost_path += solution->cost.value();
                     mpath1.push_back(solution);
                     solution = solution->parent;
                 }
@@ -442,10 +456,15 @@ ompl::base::PlannerStatus ompl::geometric::BiTRRT::solve(const base::PlannerTerm
                 solution = connectionPoint_.second;
                 std::vector<Motion *> mpath2;
                 while (solution != nullptr)
-                {
+                {   
+                    cost_path += solution->cost.value();
                     mpath2.push_back(solution);
                     solution = solution->parent;
+                    // cost_path += solution->cost.value();
                 }
+
+                // OMPL_INFORM("Cost of the path is %f", cost_path);
+                std::cout<<"Cost of the path is "<<cost_path<<std::endl;
 
                 auto path(std::make_shared<PathGeometric>(si_));
                 path->getStates().reserve(mpath1.size() + mpath2.size());

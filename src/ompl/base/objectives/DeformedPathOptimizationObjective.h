@@ -72,7 +72,7 @@ namespace ompl
 
 
             // parameters for contact detection
-            std::string mesh_path = "/home/lzt/catkin_crl/src/franka_ros/contact_detection/meshed_remeshed"; 
+            std::string mesh_path = "/home/lzt/catkin_crl/src/franka_ros/contact_detection/meshed_remeshed/"; 
             int robot_flag = 0;
         private:
             

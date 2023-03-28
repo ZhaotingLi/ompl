@@ -254,7 +254,9 @@ namespace ompl
             /// \brief Compute distance between motions (actually distance between contained states)
             double distanceFunction(const Motion *a, const Motion *b) const
             {
-                return si_->distance(a->state, b->state);
+                // return si_->distance(a->state, b->state);
+                // modify by lzt
+                return si_->distance(a->state, b->state) + (a->cost.value() - b->cost.value()) * (a->cost.value() - b->cost.value());
             }
 
             /// \brief The maximum length of a motion to be added to a tree

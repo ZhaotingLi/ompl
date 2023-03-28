@@ -43,12 +43,16 @@ ompl::base::DeformedPathOptimizationObjective::DeformedPathOptimizationObjective
 {
     description_ = "Deformed path length";
 
-    contact_detector_simplified.read_mesh_data();
-    contact_detector_simplified.create_vertex_neighbor_info();
+    // contact_detector_simplified.read_mesh_data();
+    // contact_detector_simplified.create_vertex_neighbor_info();
+
+    contact_detector_simplified.read_link_cluster_vertices_infos();
 
     Eigen::Vector3d pin1, pin2;
     pin1 << 0.5, -0.3, 0.425;
     pin2 << 0.5, 0.3, 0.425;
+    // pin1 << 0.5, -0.3, 0.375;
+    // pin2 << 0.5, 0.3, 0.375;
 
     contact_detector_simplified.set_elastic_band_pins(pin1, pin2);
 }
@@ -88,8 +92,8 @@ ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deform
     robot_state_13.segment(6, 7) = robot_state;
 
     std::vector<Eigen::Vector3d> path_vertices;
-    contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 1, path_vertices);   // 1 is the case where robot is below the band
-    // contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 0, path_vertices);  // 0 is the case where robot is above the band
+    // contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 1, path_vertices);   // 1 is the case where robot is below the band
+    contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 0, path_vertices);  // 0 is the case where robot is above the band
 
     double cost_deformed = contact_detector_simplified.calculate_path_cost(path_vertices);
 
@@ -98,7 +102,7 @@ ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deform
     // std::cout<<"sampled robot state: " << robot_state_13.transpose() << std::endl; 
 
     // return Cost(0.5 + std::exp(10 * cost_deformed));
-    return Cost(0.01 + (100 * cost_deformed));
+    return Cost(0.1 + (100 * cost_deformed));
 }
 
 ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::motionCost(const State *s1, const State *s2) const
