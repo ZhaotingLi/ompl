@@ -26,7 +26,7 @@ include(FeatureSummary)
 include(CompilerSettings)
 include(OMPLUtils)
 
-include_directories(/home/lzt/catkin_crl/src/franka_ros/contact_detection/include)
+include_directories(${CONTACT_DETECTION_PATH}/include)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
@@ -72,22 +72,24 @@ find_package(PythonLibs REQUIRED) # matplotlibcpp needs this
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 # find_package(catkin REQUIRED COMPONENTS contact_detection)
-include_directories(SYSTEM /home/lzt/catkin_crl/src/franka_ros/contact_detection/include)
+set(CONTACT_DETECTION_PATH "/home/lzt/catkin_crl/src/franka_ros/contact_detection")
+#set(CONTACT_DETECTION_PATH "/home/panda/catkin_crl/src/franka_ros/contact_detection")
+include_directories(SYSTEM ${CONTACT_DETECTION_PATH}/include)
 link_directories(${catkin_INCLUDE_DIRS})
 
 add_library(contact_detection 
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/mesh_model/mesh_loader.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/mesh_model/tinyxml2.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/contact_detection_simplified_model.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/contact_detection_core.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/robot/robot.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/robot/utils.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/robot/urdfLoader.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/helpers/helpers.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/utils/logger.cpp
-            /home/lzt/catkin_crl/src/franka_ros/contact_detection/src/utils/utils.cpp
+            ${CONTACT_DETECTION_PATH}/src/mesh_model/mesh_loader.cpp
+            ${CONTACT_DETECTION_PATH}/src/mesh_model/tinyxml2.cpp
+            ${CONTACT_DETECTION_PATH}/src/contact_detection_simplified_model.cpp
+            ${CONTACT_DETECTION_PATH}/src/contact_detection_core.cpp
+            ${CONTACT_DETECTION_PATH}/src/robot/robot.cpp
+            ${CONTACT_DETECTION_PATH}/src/robot/utils.cpp
+            ${CONTACT_DETECTION_PATH}/src/robot/urdfLoader.cpp
+            ${CONTACT_DETECTION_PATH}/src/helpers/helpers.cpp
+            ${CONTACT_DETECTION_PATH}/src/utils/logger.cpp
+            ${CONTACT_DETECTION_PATH}/src/utils/utils.cpp
             )
-target_include_directories(contact_detection PUBLIC ${OMPL_INCLUDE_DIRS} /home/lzt/catkin_crl/src/franka_ros/contact_detection/include)
+target_include_directories(contact_detection PUBLIC ${OMPL_INCLUDE_DIRS} ${CONTACT_DETECTION_PATH}/include)
 target_link_libraries(contact_detection ${OMPL_LIBRARIES} ${catkin_LIBRARIES} OsqpEigen::OsqpEigen)
 
 # find_package(tinyxml2 CONFIG REQUIRED)

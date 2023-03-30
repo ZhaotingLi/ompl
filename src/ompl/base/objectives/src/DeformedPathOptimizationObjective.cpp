@@ -92,8 +92,9 @@ ompl::base::Cost ompl::base::DeformedPathOptimizationObjective::StateCost_deform
     robot_state_13.segment(6, 7) = robot_state;
 
     std::vector<Eigen::Vector3d> path_vertices;
-    // contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 1, path_vertices);   // 1 is the case where robot is below the band
-    contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 0, path_vertices);  // 0 is the case where robot is above the band
+    std::vector<int> path_vertices_id;
+    // contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 1, path_vertices, path_vertices_id);   // 1 is the case where robot is below the band
+    contact_detector_simplified.find_contact_location_by_mode(robot_state_13, 0, path_vertices, path_vertices_id);  // 0 is the case where robot is above the band
 
     double cost_deformed = contact_detector_simplified.calculate_path_cost(path_vertices);
 
