@@ -57,6 +57,14 @@ ompl::base::DeformedPathOptimizationObjective::DeformedPathOptimizationObjective
     contact_detector_simplified.set_elastic_band_pins(pin1, pin2);
 }
 
+void ompl::base::DeformedPathOptimizationObjective::update_planner_info(const double pin1_x, const double pin1_z)
+{
+    Eigen::Vector3d pin1, pin2;
+    pin1 << pin1_x, -0.3, pin1_z;
+    pin2 << pin1_x, 0.3, pin1_z;
+    contact_detector_simplified.set_elastic_band_pins(pin1, pin2);
+}
+
 double ompl::base::DeformedPathOptimizationObjective::getPathLengthWeight() const
 {
     return pathLengthWeight_;

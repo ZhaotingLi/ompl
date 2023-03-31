@@ -122,6 +122,8 @@ namespace ompl
             /** \brief Get the cost that corresponds to the motion segment between \e s1 and \e s2 */
             virtual Cost motionCost(const State *s1, const State *s2) const = 0;
 
+            virtual void update_planner_info(const double pin1_x, const double pin1_z) {};
+
 // This is needed to correctly generate the python bindings
 #ifndef __castxml__
             /** \brief Get the cost that corresponds to the motion created by a control \e c applied for duration \e steps.
@@ -264,7 +266,7 @@ namespace ompl
               addition to add up all the individual objectives' motion
               cost values, where each individual value is scaled by
               its weight */
-            Cost motionCost(const State *s1, const State *s2) const override;
+            Cost motionCost(const State *s1, const State *s2) const override;\
 
         protected:
             /** \brief Defines a pairing of an objective and its weight */

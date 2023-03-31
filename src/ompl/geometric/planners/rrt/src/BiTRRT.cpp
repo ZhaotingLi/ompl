@@ -62,6 +62,10 @@ ompl::geometric::BiTRRT::BiTRRT(const base::SpaceInformationPtr &si) : base::Pla
     Planner::declareParam<double>("frontier_node_ratio", this, &BiTRRT::setFrontierNodeRatio,
                                   &BiTRRT::getFrontierNodeRatio);
     Planner::declareParam<double>("cost_threshold", this, &BiTRRT::setCostThreshold, &BiTRRT::getCostThreshold);
+
+    Planner::declareParam<double>("pin1_x", this, &BiTRRT::setPin1_x, &BiTRRT::getPin1_x);
+    Planner::declareParam<double>("pin1_z", this, &BiTRRT::setPin1_z, &BiTRRT::getPin1_z);
+
 }
 
 ompl::geometric::BiTRRT::~BiTRRT()
@@ -141,14 +145,17 @@ void ompl::geometric::BiTRRT::setup()
                                 });
 
     // Setup the optimization objective, if it isn't specified
-    if (!pdef_ || !pdef_->hasOptimizationObjective())
-    {
-        OMPL_INFORM("%s: No optimization objective specified.  Defaulting to deformed path minimization.",
-                    getName().c_str());
-        opt_ = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
-    }
-    else
-        opt_ = pdef_->getOptimizationObjective();
+    // if (!pdef_ || !pdef_->hasOptimizationObjective())
+    // {
+    //     OMPL_INFORM("%s: No optimization objective specified.  Defaulting to deformed path minimization.",
+    //                 getName().c_str());
+    //     opt_ = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
+    // }
+    // else
+    //     opt_ = pdef_->getOptimizationObjective();
+
+    opt_ = std::make_shared<base::DeformedPathOptimizationObjective>(si_);
+    opt_->update_planner_info(pin1_x,pin1_z);
 
     // Set the threshold that decides if a new node is a frontier node or non-frontier node
     if (frontierThreshold_ < std::numeric_limits<double>::epsilon())

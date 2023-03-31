@@ -81,7 +81,8 @@ namespace ompl
             ///  the search tree.  Very short/long motions may inhibit
             ///  the exploratory capabilities of the planner.
             void setRange(double distance)
-            {
+            {   
+                std::cout << "setRange: " << distance << std::endl;
                 maxDistance_ = distance;
             }
 
@@ -112,7 +113,8 @@ namespace ompl
             /// Any motion cost that is not better than this cost (according to
             /// the optimization objective) will not be expanded by the planner.
             void setCostThreshold(double maxCost)
-            {
+            {   
+                std::cout << "setCostThreshold: " << maxCost << std::endl;
                 costThreshold_ = base::Cost(maxCost);
             }
 
@@ -177,6 +179,33 @@ namespace ompl
                 tGoal_ = std::make_shared<NN<Motion *>>();
                 setup();
             }
+
+            void setPin1_x(double x)
+            {   
+                std::cout << "setpin1 x: " << x << std::endl;
+                pin1_x = x;
+            }
+
+            /// \brief Get the range the planner is using
+            double getPin1_x() const
+            {
+                return pin1_x;
+            }
+
+            void setPin1_z(double z)
+            {   
+                std::cout << "setpin1 z: " << z << std::endl;
+                pin1_z = z;
+            }
+
+            /// \brief Get the range the planner is using
+            double getPin1_z() const
+            {
+                return pin1_z;
+            }
+
+
+
 
         protected:
             /// \brief Representation of a motion in the search tree
@@ -310,6 +339,10 @@ namespace ompl
 
             /// \brief The objective (cost function) being optimized
             ompl::base::OptimizationObjectivePtr opt_;
+
+            /// \brief The info of the internal state for the deformed cost function 
+            double pin1_x {0.5};
+            double pin1_z {0.425};
         };
     }
 }

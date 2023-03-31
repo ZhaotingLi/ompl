@@ -66,6 +66,8 @@ namespace ompl
             /** \brief Defines motion cost in terms of the mechanical work formulation used for TRRT. */
             Cost motionCost(const State *s1, const State *s2) const override;
 
+            void update_planner_info(const double pin1_x, const double pin1_z) override;
+
         protected:
             /** \brief The weighing factor for the path length in the mechanical work objective formulation. */
             double pathLengthWeight_;
