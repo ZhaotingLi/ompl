@@ -59,11 +59,8 @@ set the `CONTACT_DETECTION_PATH` to the path of the contact_detection package.
 
 ```
 cd build/Release
-
 cmake ../.. -DPYTHON_EXEC=/usr/bin/python${PYTHONV}
-
 make
-
 sudo make install
 ```
 
