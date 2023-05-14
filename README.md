@@ -51,8 +51,11 @@ The implementation mianly includes the following
 
 ## Usage
 
-You should first change the path defined in the `ompl/CMakeLists.txt`:
+1. You should first change the path defined in the `ompl/CMakeLists.txt`:
 set the `CONTACT_DETECTION_PATH` to the path of the contact_detection package.
+
+2. To use moveit with local installed ompl library, you need to remove the default-installed ompl version inside ros, see https://github.com/ros-planning/moveit_ros/issues/623  and https://ompl.kavrakilab.org/buildSystem.html 
+
 
 
     cd build/Release
