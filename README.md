@@ -57,11 +57,15 @@ set the `CONTACT_DETECTION_PATH` to the path of the contact_detection package.
 2. To use moveit with local installed ompl library, you need to remove the default-installed ompl version inside ros, see https://github.com/ros-planning/moveit_ros/issues/623  and https://ompl.kavrakilab.org/buildSystem.html 
 
 
+```
+cd build/Release
 
-    cd build/Release
-    cmake ../.. -DPYTHON_EXEC=/usr/bin/python${PYTHONV}
-    make
-    sudo make install
+cmake ../.. -DPYTHON_EXEC=/usr/bin/python${PYTHONV}
+
+make
+
+sudo make install
+```
 
 Note that, after the modification of the contact_detection package, you should build and install ompl first, then build your ros workspace. 
 
