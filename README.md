@@ -31,10 +31,34 @@ following commands:
     make -j 4 update_bindings # if you want Python bindings
     make -j 4 # replace "4" with the number of cores on your machine
 
+# Contact-aware planning
 
-### Usage
+## Implementation
+
+The implementation mianly includes the following
+
+1. Create a new type of cost function using simplified_elastic_band_model (`src/ompl/base/objectives/src/DeformedPathOptimizationObjective.cpp`)
+
+2. Modify BiTRRT algorithm in `src/ompl/geometric/planners/rrt/BiTRRT.hdistanceFunction`
+
+    (a) Add the input of the position of the elastic band
+
+    (b) Modify the `distanceFunction`
+
+    (c) Modify the condition that two tree merges 
+
+    (d) use the cost `DeformedPathOptimizationObjective`
+
+## Usage
+
+You should first change the path defined in the `ompl/CMakeLists.txt`:
+set the `CONTACT_DETECTION_PATH` to the path of the contact_detection package.
+
 
     cd build/Release
     cmake ../.. -DPYTHON_EXEC=/usr/bin/python${PYTHONV}
     make
     sudo make install
+
+Note that, after the modification of the contact_detection package, you should build and install ompl first, then build your ros workspace. 
+
